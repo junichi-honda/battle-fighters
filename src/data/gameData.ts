@@ -88,7 +88,7 @@ export const FIGHTERS: FighterDef[] = [
     specialType: 'allStop',
     specialName: 'オールストップ',
     specialDesc: 'すべての敵を5秒止める',
-    feature: 'こうげき5回に1回、時を止められる(3秒間)',
+    feature: 'A+Bどうじおしで、時を止められる(3秒間)',
     unlockStage: 9,
     textureKey: 'fighter-mage'
   }
