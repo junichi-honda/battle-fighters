@@ -386,6 +386,14 @@ export class BattleScene extends Phaser.Scene {
       const dmg = (s.getData('dmg') as number) ?? this.atk;
       s.destroy();
       this.damageEnemy(enemy, dmg);
+
+      // まほうつかい: こうげきが敵に5回あたるごとに、時を止める(3秒)
+      if (this.fighter.attackType === 'magic') {
+        this.attackCount++;
+        if (this.attackCount % 5 === 0) {
+          this.startTimeStop(3000);
+        }
+      }
     });
 
     // 火の玉は地面で消える
@@ -533,12 +541,6 @@ export class BattleScene extends Phaser.Scene {
 
   private doAttack(time: number): void {
     Sound.sfxAttack();
-    this.attackCount++;
-
-    // まほうつかい: こうげき5回に1回、時を止める(3秒)
-    if (this.fighter.attackType === 'magic' && this.attackCount % 5 === 0) {
-      this.startTimeStop(3000);
-    }
 
     if (this.fighter.attackType === 'melee') {
       this.meleeHit(this.atk, this.fighter.attackRange, false);
