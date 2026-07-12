@@ -48,6 +48,7 @@ export class BattleScene extends Phaser.Scene {
   private invulnUntil = 0;
   private attackCount = 0; // まほうつかいの時止めカウント
   private timeStopUntil = 0;
+  private wasFrozen = false;
   private dying = false;
   private cleared = false;
   private specialLockUntil = 0;
@@ -78,6 +79,7 @@ export class BattleScene extends Phaser.Scene {
     this.gainedExp = 0;
     this.attackCount = 0;
     this.timeStopUntil = 0;
+    this.wasFrozen = false;
     this.dying = false;
     this.cleared = false;
     this.boss = null;
@@ -237,7 +239,7 @@ export class BattleScene extends Phaser.Scene {
       const count = 3 + (this.stageDef.sub % 3);
       for (let i = 0; i < count; i++) {
         const px = 500 + ((this.stageDef.width - 1000) / count) * i + rnd.between(-80, 80);
-        const py = GROUND_Y - rnd.between(40, 90);
+        const py = GROUND_Y - rnd.between(60, 90);
         const pw = rnd.between(130, 190);
         const rect = this.add.rectangle(px, py, pw, 16, w.groundEdge).setDepth(-5);
         this.physics.add.existing(rect, true);
@@ -480,13 +482,28 @@ export class BattleScene extends Phaser.Scene {
       onStomp: (enemy: Enemy) => this.bossStomp(enemy)
     };
 
-    // 火の玉も時止め中は停止
+    // 火の玉も時止め中は停止(解除後は元の速度に戻す。戻さないと球が空中に残存し続けるバグになる)
     if (frozen) {
       this.fireballs.getChildren().forEach((fb) => {
-        const b = (fb as Phaser.Physics.Arcade.Image).body as Phaser.Physics.Arcade.Body;
+        const img = fb as Phaser.Physics.Arcade.Image;
+        const b = img.body as Phaser.Physics.Arcade.Body;
+        if (!img.getData('frozen')) {
+          img.setData('frozen', true);
+          img.setData('frozenVX', b.velocity.x);
+          img.setData('frozenVY', b.velocity.y);
+        }
         b.setVelocity(0, 0);
       });
+    } else if (this.wasFrozen) {
+      this.fireballs.getChildren().forEach((fb) => {
+        const img = fb as Phaser.Physics.Arcade.Image;
+        if (!img.getData('frozen')) return;
+        const b = img.body as Phaser.Physics.Arcade.Body;
+        b.setVelocity(img.getData('frozenVX') as number, img.getData('frozenVY') as number);
+        img.setData('frozen', false);
+      });
     }
+    this.wasFrozen = frozen;
 
     this.enemyGroup.getChildren().forEach((child) => {
       const enemy = child as Enemy;
