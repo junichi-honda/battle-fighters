@@ -1,0 +1,22 @@
+{
+  "name": "battle-fighters",
+  "private": true,
+  "version": "1.0.0",
+  "description": "バトルファイターズ - 宇宙を舞台にした横スクロールアクション",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "cap:sync": "npm run build && cap sync"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.2",
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.2",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}
