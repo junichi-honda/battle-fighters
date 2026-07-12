@@ -21,6 +21,7 @@
         overflow: hidden;
         width: 100%;
         height: 100%;
+        height: 100dvh;
         touch-action: none;
         -webkit-user-select: none;
         user-select: none;
@@ -28,6 +29,9 @@
       #game {
         width: 100%;
         height: 100%;
+        /* iOS Safari 等でアドレスバーの表示/非表示により
+           innerHeight が変わるケースを JS 側 (main.ts) で補正する */
+        height: calc(var(--app-height, 100vh));
         display: flex;
         align-items: center;
         justify-content: center;
