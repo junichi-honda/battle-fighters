@@ -46,12 +46,12 @@ export class BattleScene extends Phaser.Scene {
   private facing = 1;
   private nextAttackAt = 0;
   private invulnUntil = 0;
-  private attackCount = 0; // まほうつかいの時止めカウント
   private timeStopUntil = 0;
   private wasFrozen = false;
   private dying = false;
   private cleared = false;
   private specialLockUntil = 0;
+  private mageStopLockUntil = 0;
 
   private boss: Enemy | null = null;
 
@@ -77,7 +77,6 @@ export class BattleScene extends Phaser.Scene {
     this.fighterId = data.fighterId ?? loadSave().lastFighterId;
     this.gauge = 0;
     this.gainedExp = 0;
-    this.attackCount = 0;
     this.timeStopUntil = 0;
     this.wasFrozen = false;
     this.dying = false;
@@ -86,6 +85,7 @@ export class BattleScene extends Phaser.Scene {
     this.nextAttackAt = 0;
     this.invulnUntil = 0;
     this.specialLockUntil = 0;
+    this.mageStopLockUntil = 0;
     this.facing = 1;
   }
 
@@ -386,14 +386,6 @@ export class BattleScene extends Phaser.Scene {
       const dmg = (s.getData('dmg') as number) ?? this.atk;
       s.destroy();
       this.damageEnemy(enemy, dmg);
-
-      // まほうつかい: こうげきが敵に5回あたるごとに、時を止める(3秒)
-      if (this.fighter.attackType === 'magic') {
-        this.attackCount++;
-        if (this.attackCount % 5 === 0) {
-          this.startTimeStop(3000);
-        }
-      }
     });
 
     // 火の玉は地面で消える
@@ -452,6 +444,13 @@ export class BattleScene extends Phaser.Scene {
       this.specialLockUntil = time + 800;
       this.gauge = 0;
       this.doSpecial();
+      return;
+    }
+
+    // まほうつかい: A+Bどうじおしで時を止める(3秒、ゲージ不要)
+    if (wantSpecial && this.fighter.attackType === 'magic' && time > this.mageStopLockUntil) {
+      this.mageStopLockUntil = time + 3800;
+      this.startTimeStop(3000);
       return;
     }
 
