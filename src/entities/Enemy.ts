@@ -222,10 +222,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     switch (this.aiState) {
       case 'dive': {
-        // きゅうこうか中
+        // きゅうこうか中(時止め明けなどで速度が失われても突入方向へ再加速する)
         const d = Phaser.Math.Distance.Between(this.x, this.y, this.diveTarget.x, this.diveTarget.y);
         if (d < 40 || this.y > ctx.groundY - 60) {
           this.aiState = 'return';
+        } else {
+          const angle = Math.atan2(this.diveTarget.y - this.y, this.diveTarget.x - this.x);
+          body.setVelocity(Math.cos(angle) * 430, Math.sin(angle) * 430);
         }
         break;
       }
