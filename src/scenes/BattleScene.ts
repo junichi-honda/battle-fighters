@@ -237,7 +237,7 @@ export class BattleScene extends Phaser.Scene {
       const count = 3 + (this.stageDef.sub % 3);
       for (let i = 0; i < count; i++) {
         const px = 500 + ((this.stageDef.width - 1000) / count) * i + rnd.between(-80, 80);
-        const py = GROUND_Y - rnd.between(120, 200);
+        const py = GROUND_Y - rnd.between(40, 90);
         const pw = rnd.between(130, 190);
         const rect = this.add.rectangle(px, py, pw, 16, w.groundEdge).setDepth(-5);
         this.physics.add.existing(rect, true);
@@ -275,7 +275,7 @@ export class BattleScene extends Phaser.Scene {
         scale: 1,
         isBoss: false
       };
-      const y = def.behavior === 'flyer' ? GROUND_Y - 250 : GROUND_Y - 60;
+      const y = def.behavior === 'flyer' ? GROUND_Y - 130 : GROUND_Y - 60;
       const enemy = new Enemy(this, spawn.x, y, runtime);
       this.enemyGroup.add(enemy, false);
       enemy.setDepth(8);

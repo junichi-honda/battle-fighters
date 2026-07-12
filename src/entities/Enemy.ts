@@ -116,7 +116,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
       case 'flyer': {
         // 空をとんで火の玉をうつ
         this.swayT += 0.03;
-        const targetY = ctx.groundY - 230 + Math.sin(this.swayT) * 40;
+        const targetY = ctx.groundY - 130 + Math.sin(this.swayT) * 35;
         body.setVelocityY(Phaser.Math.Clamp((targetY - this.y) * 3, -140, 140));
         body.setVelocityX(Phaser.Math.Clamp(dx, -1, 1) * this.def.speed * (Math.abs(dx) > 80 ? 1 : 0.2));
         if (time > this.fireAt && Math.abs(dx) < 620) {
