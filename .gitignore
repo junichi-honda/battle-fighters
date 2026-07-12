@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# Capacitor ネイティブプロジェクト(必要になったら cap add で生成)
+android/
+ios/
